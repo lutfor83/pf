@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lutfor Rahman — Portfolio</title>
+  <style>
+    :root {
+      --accent: #0078ff;
+      --bg: #f9fafc;
+      --text: #222;
+      --card: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--card);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    nav {
+      max-width: 900px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      margin-left: 1.2rem;
+      font-weight: 500;
+    }
+    nav a:hover { color: var(--accent); }
+
+    section {
+      max-width: 900px;
+      margin: auto;
+      padding: 4rem 2rem;
+    }
+
+    h1, h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .intro {
+      text-align: center;
+      padding-top: 4rem;
+    }
+    .intro img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #777;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div><strong>Lutfor Rahman</strong></div>
+      <div>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="intro" id="about">
+    <img src="https://avatars.githubusercontent.com/u/9919?v=4" alt="Your Photo" />
+    <h1>Hello :) 👋</h1>
+   
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="projects">
+      <div class="card">
+        <h3>Cover Page Generator</h3>
+        <p>A tool that builds A4 academic cover pages in seconds using HTML and JavaScript.</p>
+        <a href="cover-page/index.html" target="_blank">View Project →</a>
+      </div>
+      <div class="card">
+        <h3>Coming Soon</h3>
+        <p>A minimal bla bla bla.</p>
+        <a href="#" target="_blank">View Project →</a>
+      </div>
+      <div class="card">
+        <h3>Coming soon!</h3>
+        <p>A minimal bla bla bla</p>
+        <a href="#" target="_blank">View Project →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Feel free to reach out if you'd like to collaborate or just say hi!</p>
+    <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+    <p>GitHub: <a href="https://github.com/yourusername" target="_blank">@yourusername</a></p>
+  </section>
+
+  <footer>
+    © 2025 Lutfor Rahman — Built with ❤️ on GitHub Pages
+  </footer>
+
+</body>
+</html>
