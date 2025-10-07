@@ -208,10 +208,10 @@
             width: var(--a4-width);
             height: var(--a4-height);
             background: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            /* --- FIX: Removed box-shadow to prevent rendering bug on scaled element --- */
+            /* box-shadow: 0 0 15px rgba(0,0,0,0.2); */
+            border: 1px solid #ccc; /* Add a subtle border instead of shadow */
             transform-origin: top center; /* Scaling originates from top center */
-            /* --- CSS CHANGE: Removed fixed scale for JS control --- */
-            /* transform: scale(0.3); */
             box-sizing: border-box;
             padding: 2cm;
             color: black;
@@ -237,6 +237,9 @@
             width: 100px;
             height: auto;
             margin-bottom: 30px;
+            /* --- FIX: Added properties to improve image sharpness during scaling --- */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
 
         .cover-title { font-size: 28pt; font-weight: bold; }
@@ -641,20 +644,15 @@
                 });
             });
 
-            // --- *** NEW FEATURE: DYNAMIC PREVIEW SCALING *** ---
+            // --- DYNAMIC PREVIEW SCALING ---
             const adjustPreviewScale = () => {
                 const page = previewContainer.querySelector('.a4-page');
                 if (!page) return;
 
-                // Temporarily reset transform to measure the page's natural width
                 page.style.transform = 'scale(1)';
                 const containerWidth = previewContainer.clientWidth;
                 const pageWidth = page.offsetWidth;
-
-                // Calculate scale to fit width, with a little padding (95%)
                 const scale = (containerWidth / pageWidth) * 0.95;
-                
-                // Apply the new dynamic scale
                 page.style.transform = `scale(${scale})`;
             };
             
@@ -713,8 +711,6 @@
                 previewHeading.classList.remove('hidden');
                 downloadBtn.classList.remove('hidden');
                 
-                // Adjust scale after the preview is rendered
-                // A short timeout ensures the browser has painted the element before we measure it
                 setTimeout(adjustPreviewScale, 50); 
             };
 
@@ -726,12 +722,6 @@
                 downloadBtn.textContent = 'Generating...';
                 downloadBtn.disabled = true;
 
-                // --- NOTE on 'scale' option ---
-                // This calculation is correct for achieving 300 PPI.
-                // Browsers render at a standard of 96 pixels-per-inch (PPI).
-                // To get a 300 PPI image, we must scale the canvas render by a factor of (300 / 96).
-                // For an A4 page (8.27" wide), this results in an image width of:
-                // (8.27 inches * 96 ppi) * (300 / 96) = 2481 pixels. This is the correct resolution.
                 html2canvas(pageToRender, {
                     scale: 300 / 96,
                     logging: false,
