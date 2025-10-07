@@ -196,11 +196,11 @@
         #preview-container {
             background: #e0e0e0;
             padding: 20px;
+            border-radius: 5px;
+            overflow: hidden; /* Hide any overflow */
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 5px;
-            overflow-x: auto; /* Adds scrollbar if needed, prevents squishing */
         }
 
         /* A4 Page Preview Styling */
@@ -209,15 +209,15 @@
             height: var(--a4-height);
             background: white;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            transform-origin: top center;
-            transform: scale(0.3); /* Scale down for on-screen preview */
+            transform-origin: top center; /* Scaling originates from top center */
+            /* --- CSS CHANGE: Removed fixed scale for JS control --- */
+            /* transform: scale(0.3); */
             box-sizing: border-box;
             padding: 2cm;
             color: black;
             display: flex;
             flex-direction: column;
             overflow: hidden; /* Important for html2canvas */
-            flex-shrink: 0; /* Prevents the page itself from shrinking */
         }
         
         .action-buttons {
@@ -296,9 +296,6 @@
             .form-grid { 
                 grid-template-columns: 1fr; 
             }
-            .a4-page { 
-                transform: scale(0.25); 
-            }
             .template-options { 
                 flex-direction: column; 
                 align-items: center;
@@ -370,7 +367,7 @@
                          <div class="date-group">
                             <input type="checkbox" id="use-today-date">
                             <label for="use-today-date">Use Today's Date</label>
-                        </div>
+                         </div>
                     </div>
 
                     <button type="button" id="next-btn">Create Cover Page</button>
@@ -397,7 +394,7 @@
 
             <h2 id="preview-heading" class="hidden">2. Preview & Download</h2>
             <div id="preview-container" class="hidden">
-                </div>
+                 </div>
             
             <div class="action-buttons">
                 <button type="button" id="back-btn" class="secondary">Back to Edit</button>
@@ -644,6 +641,33 @@
                 });
             });
 
+            // --- *** NEW FEATURE: DYNAMIC PREVIEW SCALING *** ---
+            const adjustPreviewScale = () => {
+                const page = previewContainer.querySelector('.a4-page');
+                if (!page) return;
+
+                // Temporarily reset transform to measure the page's natural width
+                page.style.transform = 'scale(1)';
+                const containerWidth = previewContainer.clientWidth;
+                const pageWidth = page.offsetWidth;
+
+                // Calculate scale to fit width, with a little padding (95%)
+                const scale = (containerWidth / pageWidth) * 0.95;
+                
+                // Apply the new dynamic scale
+                page.style.transform = `scale(${scale})`;
+            };
+            
+            const debounce = (func, delay) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), delay);
+                };
+            };
+            
+            window.addEventListener('resize', debounce(adjustPreviewScale, 150));
+
             const renderTemplate = (templateId) => {
                 const { title, courseName, courseCode, teacher, studentName, studentId, studentSection, studentBatch, submissionDate } = coverPageData;
                 
@@ -688,6 +712,10 @@
                 previewContainer.classList.remove('hidden');
                 previewHeading.classList.remove('hidden');
                 downloadBtn.classList.remove('hidden');
+                
+                // Adjust scale after the preview is rendered
+                // A short timeout ensures the browser has painted the element before we measure it
+                setTimeout(adjustPreviewScale, 50); 
             };
 
             // --- JPG DOWNLOAD LOGIC ---
@@ -698,6 +726,12 @@
                 downloadBtn.textContent = 'Generating...';
                 downloadBtn.disabled = true;
 
+                // --- NOTE on 'scale' option ---
+                // This calculation is correct for achieving 300 PPI.
+                // Browsers render at a standard of 96 pixels-per-inch (PPI).
+                // To get a 300 PPI image, we must scale the canvas render by a factor of (300 / 96).
+                // For an A4 page (8.27" wide), this results in an image width of:
+                // (8.27 inches * 96 ppi) * (300 / 96) = 2481 pixels. This is the correct resolution.
                 html2canvas(pageToRender, {
                     scale: 300 / 96,
                     logging: false,
